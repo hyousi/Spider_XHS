@@ -1,5 +1,9 @@
 {
   "dependencies": {
     "jsdom": "^26.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "typescript": "^5.7.2"
   }
 }
