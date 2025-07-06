@@ -6,7 +6,7 @@ import urllib
 import requests
 
 from utils.result import safe_json_response
-from models.xhs import HomefeedCategoryResponse, UserData
+from models.xhs import HomefeedCategoryResponse, HomefeedResponse, UserData
 from xhs_utils.xhs_util import (
     splice_str,
     generate_request_params,
@@ -33,7 +33,7 @@ class XHS_Apis:
         返回主页的所有频道
         """
         api = "/api/sns/web/v1/homefeed/category"
-        headers, cookies, data = generate_request_params(cookies_str, api)
+        headers, cookies, _ = generate_request_params(cookies_str, api)
         response = requests.get(
             self.base_url + api, headers=headers, cookies=cookies, proxies=proxies
         )
@@ -41,10 +41,10 @@ class XHS_Apis:
 
     def get_homefeed_recommend(
         self,
-        category,
-        cursor_score,
-        refresh_type,
-        note_index,
+        category: str,
+        cursor_score: str,
+        refresh_type: int,
+        note_index: int,
         cookies_str: str,
         proxies: Optional[dict] = None,
     ):
@@ -57,79 +57,71 @@ class XHS_Apis:
         :param cookies_str: 你的cookies
         返回主页推荐的笔记
         """
-        res_json = None
-        try:
-            api = f"/api/sns/web/v1/homefeed"
-            data = {
-                "cursor_score": cursor_score,
-                "num": 20,
-                "refresh_type": refresh_type,
-                "note_index": note_index,
-                "unread_begin_note_id": "",
-                "unread_end_note_id": "",
-                "unread_note_count": 0,
-                "category": category,
-                "search_key": "",
-                "need_num": 10,
-                "image_formats": ["jpg", "webp", "avif"],
-                "need_filter_image": False,
-            }
-            headers, cookies, trans_data = generate_request_params(
-                cookies_str, api, data
-            )
-            response = requests.post(
-                self.base_url + api,
-                headers=headers,
-                data=trans_data,
-                cookies=cookies,
-                proxies=proxies,
-            )
-            res_json = response.json()
-            success, msg = res_json["success"], res_json["msg"]
-        except Exception as e:
-            success = False
-            msg = str(e)
-        return success, msg, res_json
+        api = "/api/sns/web/v1/homefeed"
+        data = {
+            "cursor_score": cursor_score,
+            "num": 20,
+            "refresh_type": refresh_type,
+            "note_index": note_index,
+            "unread_begin_note_id": "",
+            "unread_end_note_id": "",
+            "unread_note_count": 0,
+            "category": category,
+            "search_key": "",
+            "need_num": 10,
+            "image_formats": ["jpg", "webp", "avif"],
+            "need_filter_image": False,
+        }
+        headers, cookies, trans_data = generate_request_params(cookies_str, api, data)
+        response = requests.post(
+            self.base_url + api,
+            headers=headers,
+            data=trans_data,
+            cookies=cookies,
+            proxies=proxies,
+        )
+        result = safe_json_response(response, HomefeedResponse)
+        return result
 
-    def get_homefeed_recommend_by_num(
-        self, category, require_num, cookies_str: str, proxies: Optional[dict] = None
-    ):
-        """
-        根据数量获取主页推荐的笔记
-        :param category: 你想要获取的频道
-        :param require_num: 你想要获取的笔记的数量
-        :param cookies_str: 你的cookies
-        根据数量返回主页推荐的笔记
-        """
-        cursor_score, refresh_type, note_index = "", 1, 0
-        note_list = []
-        try:
-            while True:
-                success, msg, res_json = self.get_homefeed_recommend(
-                    category,
-                    cursor_score,
-                    refresh_type,
-                    note_index,
-                    cookies_str,
-                    proxies,
-                )
-                if not success:
-                    raise Exception(msg)
-                if "items" not in res_json["data"]:
-                    break
-                notes = res_json["data"]["items"]
-                note_list.extend(notes)
-                cursor_score = res_json["data"]["cursor_score"]
-                refresh_type = 3
-                note_index += 20
-                if len(note_list) > require_num:
-                    break
-        except Exception as e:
-            success = False
-            msg = str(e)
-        if len(note_list) > require_num:
-            note_list = note_list[:require_num]
-        return success, msg, note_list
+    # def get_homefeed_recommend_by_num(
+    #     self, category, require_num, cookies_str: str, proxies: Optional[dict] = None
+    # ):
+    #     """
+    #     根据数量获取主页推荐的笔记
+    #     :param category: 你想要获取的频道
+    #     :param require_num: 你想要获取的笔记的数量
+    #     :param cookies_str: 你的cookies
+    #     根据数量返回主页推荐的笔记
+    #     """
+    #     cursor_score, refresh_type, note_index = "", 1, 0
+    #     note_list = []
+    #     try:
+    #         while True:
+    #             success, msg, res_json = self.get_homefeed_recommend(
+    #                 category,
+    #                 cursor_score,
+    #                 refresh_type,
+    #                 note_index,
+    #                 cookies_str,
+    #                 proxies,
+    #             )
+    #             if not success:
+    #                 raise Exception(msg)
+    #             if "items" not in res_json["data"]:
+    #                 break
+    #             notes = res_json["data"]["items"]
+    #             note_list.extend(notes)
+    #             cursor_score = res_json["data"]["cursor_score"]
+    #             refresh_type = 3
+    #             note_index += 20
+    #             if len(note_list) > require_num:
+    #                 break
+    #     except Exception as e:
+    #         success = False
+    #         msg = str(e)
+    #     if len(note_list) > require_num:
+    #         note_list = note_list[:require_num]
+    #     return success, msg, note_list
 
     def get_user_info(
         self, user_id: str, cookies_str: str, proxies: Optional[dict] = None

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from typing import Optional, Any
 
-from models.xhs import HomefeedCategoryResponse, UserData
+from models.xhs import HomefeedCategoryResponse, HomefeedResponse, UserData
 from models.error import ErrorResponse
 from services.cookie_manager import cookie_manager
 from apis.xhs_pc_apis import XHS_Apis
@@ -95,12 +95,18 @@ async def get_self_info_v2(user_id: Optional[str] = None) -> UserData:
                 detail=f"小红书API调用失败: {result.msg}",
             )
 
-@router.get("/homefeed/category", summary="获取主页的所有频道", responses={
+
+@router.get(
+    "/homefeed/category",
+    summary="获取主页的所有频道",
+    responses={
         400: {"model": ErrorResponse},
         401: {"model": ErrorResponse},
     },
 )
-async def get_homefeed_category(user_id: Optional[str] = None) -> HomefeedCategoryResponse:
+async def get_homefeed_category(
+    user_id: Optional[str] = None,
+) -> HomefeedCategoryResponse:
     cookie_str = cookie_manager.get_cookie(user_id=user_id)
     if not cookie_str:
         raise HTTPException(
@@ -108,6 +114,45 @@ async def get_homefeed_category(user_id: Optional[str] = None) -> HomefeedCatego
             detail="Cookie不存在, 请先设置Cookie",
         )
     result = xhs_apis.get_homefeed_all_channel(cookies_str=cookie_str)
+    match result.success:
+        case True:
+            return result.data
+        case False:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"小红书API调用失败: {result.msg}",
+            )
+
+
+@router.get(
+    "/homefeed/recommend",
+    summary="获取主页推荐的笔记",
+    responses={
+        400: {"model": ErrorResponse},
+        401: {"model": ErrorResponse},
+    },
+)
+async def get_homefeed_recommend(
+    user_id: Optional[str] = None,
+    category: str = "all",
+    cursor_score: str = "0",
+    refresh_type: int = 0,
+    note_index: int = 0,
+) -> HomefeedResponse:
+    cookie_str = cookie_manager.get_cookie(user_id=user_id)
+    if not cookie_str:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cookie不存在, 请先设置Cookie",
+        )
+    result = xhs_apis.get_homefeed_recommend(
+        cookies_str=cookie_str,
+        category=category,
+        cursor_score=cursor_score,
+        refresh_type=refresh_type,
+        note_index=note_index,
+    )
+
     match result.success:
         case True:
             return result.data

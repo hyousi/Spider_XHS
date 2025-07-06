@@ -26,7 +26,7 @@ def generate_x_b3_traceid(len=16):
     return x_b3_traceid
 
 
-def generate_xs_xs_common(a1, api, data=""):
+def generate_xs_xs_common(a1: str, api: str, data: dict | None = None):
     ret = js.call("get_request_headers_params", api, data, a1)
     xs, xt, xs_common = ret["xs"], ret["xt"], ret["xs_common"]
     return xs, xt, xs_common
@@ -88,7 +88,7 @@ def get_request_headers_template():
     }
 
 
-def generate_headers(a1, api, data=""):
+def generate_headers(a1: str, api: str, data: dict | None = None):
     xs, xt, xs_common = generate_xs_xs_common(a1, api, data)
     x_b3_traceid = generate_x_b3_traceid()
     headers = get_request_headers_template()
@@ -97,15 +97,17 @@ def generate_headers(a1, api, data=""):
     headers["x-s-common"] = xs_common
     headers["x-b3-traceid"] = x_b3_traceid
     if data:
-        data = json.dumps(data, separators=(",", ":"), ensure_ascii=False)
-    return headers, data
+        params_str = json.dumps(data, separators=(",", ":"), ensure_ascii=False)
+    else:
+        params_str = None
+    return headers, params_str
 
 
-def generate_request_params(cookies_str, api, data=""):
+def generate_request_params(cookies_str: str, api: str, data: dict | None = None):
     cookies = trans_cookies(cookies_str)
     a1 = cookies["a1"]
-    headers, data = generate_headers(a1, api, data)
-    return headers, cookies, data
+    headers, params_str = generate_headers(a1, api, data)
+    return headers, cookies, params_str
 
 
 def splice_str(api, params):
