@@ -1,0 +1,53 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running format and lint for frontend..."
+
+# Frontend Format
+echo "Formatting frontend code with Biome..."
+pnpm exec biome format --write ./frontend
+FRONTEND_FORMAT_EXIT_CODE=$?
+
+if [ $FRONTEND_FORMAT_EXIT_CODE -ne 0 ]; then
+  echo "Biome formatting failed. Please fix the issues and try again."
+  exit $FRONTEND_FORMAT_EXIT_CODE
+fi
+echo "Frontend code formatted successfully."
+
+
+# Frontend Lint
+echo "Linting frontend code with Biome..."
+pnpm exec biome lint ./frontend
+FRONTEND_LINT_EXIT_CODE=$?
+
+if [ $FRONTEND_LINT_EXIT_CODE -ne 0 ]; then
+  echo "Biome linting failed. Please fix the issues and try again."
+  exit $FRONTEND_LINT_EXIT_CODE
+fi
+echo "Frontend code linted successfully."
+
+
+echo "Running format and lint for backend..."
+
+# Backend Format
+echo "Formatting backend code with Ruff..."
+uvx ruff format backend
+BACKEND_FORMAT_EXIT_CODE=$?
+
+if [ $BACKEND_FORMAT_EXIT_CODE -ne 0 ]; then
+  echo "Ruff formatting failed. Please fix the issues and try again."
+  exit $BACKEND_FORMAT_EXIT_CODE
+fi
+echo "Backend code formatted successfully."
+
+
+# Backend Lint
+echo "Linting backend code with Ruff..."
+uvx ruff check backend
+BACKEND_LINT_EXIT_CODE=$?
+
+if [ $BACKEND_LINT_EXIT_CODE -ne 0 ]; then
+  echo "Ruff linting failed. Please fix the issues and try again."
+  exit $BACKEND_LINT_EXIT_CODE
+fi
+echo "Backend code linted successfully." 
