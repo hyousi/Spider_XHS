@@ -45,10 +45,8 @@ def handle_user_info(data, user_id):
     tags_temp = data["tags"]
     tags = []
     for tag in tags_temp:
-        try:
-            tags.append(tag["name"])
-        except:
-            pass
+        tags.append(tag["name"])
+
     return {
         "user_id": user_id,
         "home_url": home_url,
@@ -79,7 +77,7 @@ def handle_note_info(data):
     avatar = data["note_card"]["user"]["avatar"]
     title = data["note_card"]["title"]
     if title.strip() == "":
-        title = f"无标题"
+        title = "无标题"
     desc = data["note_card"]["desc"]
     liked_count = data["note_card"]["interact_info"]["liked_count"]
     collected_count = data["note_card"]["interact_info"]["collected_count"]
@@ -88,12 +86,9 @@ def handle_note_info(data):
     image_list_temp = data["note_card"]["image_list"]
     image_list = []
     for image in image_list_temp:
-        try:
-            image_list.append(image["info_list"][1]["url"])
-            # success, msg, img_url = XHS_Apis.get_note_no_water_img(image['info_list'][1]['url'])
-            # image_list.append(img_url)
-        except:
-            pass
+        image_list.append(image["info_list"][1]["url"])
+        # success, msg, img_url = XHS_Apis.get_note_no_water_img(image['info_list'][1]['url'])
+        # image_list.append(img_url)
     if note_type == "视频":
         video_cover = image_list[0]
         video_addr = (
@@ -107,10 +102,8 @@ def handle_note_info(data):
     tags_temp = data["note_card"]["tag_list"]
     tags = []
     for tag in tags_temp:
-        try:
-            tags.append(tag["name"])
-        except:
-            pass
+        tags.append(tag["name"])
+
     upload_time = timestamp_to_str(data["note_card"]["time"])
     if "ip_location" in data["note_card"]:
         ip_location = data["note_card"]["ip_location"]
@@ -151,22 +144,23 @@ def handle_comment_info(data):
     show_tags = data["show_tags"]
     like_count = data["like_count"]
     upload_time = timestamp_to_str(data["create_time"])
-    try:
-        ip_location = data["ip_location"]
-    except:
-        ip_location = "未知"
+    ip_location = data.get("ip_location", "未知")
+    # try:
+    #     ip_location = data["ip_location"]
+    # except:
+    #     ip_location = "未知"
     pictures = []
-    try:
-        pictures_temp = data["pictures"]
-        for picture in pictures_temp:
-            try:
-                pictures.append(picture["info_list"][1]["url"])
-                # success, msg, img_url = XHS_Apis.get_note_no_water_img(picture['info_list'][1]['url'])
-                # pictures.append(img_url)
-            except:
-                pass
-    except:
-        pass
+    # try:
+    pictures_temp = data["pictures"]
+    for picture in pictures_temp:
+        # try:
+        pictures.append(picture["info_list"][1]["url"])
+        # success, msg, img_url = XHS_Apis.get_note_no_water_img(picture['info_list'][1]['url'])
+        # pictures.append(img_url)
+        # except:
+        #     pass
+    # except:
+    #     pass
     return {
         "note_id": note_id,
         "note_url": note_url,
@@ -313,7 +307,7 @@ def download_note(note_info, path, save_choice):
     nickname = note_info["nickname"]
     nickname = norm_str(nickname)[:20]
     if title.strip() == "":
-        title = f"无标题"
+        title = "无标题"
     save_path = f"{path}/{nickname}_{user_id}/{title}_{note_id}"
     check_and_create_path(save_path)
     with open(f"{save_path}/info.json", mode="w", encoding="utf-8") as f:

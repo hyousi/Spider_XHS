@@ -134,7 +134,7 @@ class XHS_Apis:
         """
         res_json = None
         try:
-            api = f"/api/sns/web/v1/user/otherinfo"
+            api = "/api/sns/web/v1/user/otherinfo"
             params = {"target_user_id": user_id}
             splice_api = splice_str(api, params)
             headers, cookies, data = generate_request_params(cookies_str, splice_api)
@@ -159,7 +159,7 @@ class XHS_Apis:
         """
         res_json = None
         try:
-            api = f"/api/sns/web/v1/user/selfinfo"
+            api = "/api/sns/web/v1/user/selfinfo"
             headers, cookies, data = generate_request_params(cookies_str, api)
             response = requests.get(
                 self.base_url + api, headers=headers, cookies=cookies, proxies=proxies
@@ -203,7 +203,7 @@ class XHS_Apis:
         """
         res_json = None
         try:
-            api = f"/api/sns/web/v1/user_posted"
+            api = "/api/sns/web/v1/user_posted"
             params = {
                 "num": "30",
                 "cursor": cursor,
@@ -284,7 +284,7 @@ class XHS_Apis:
         """
         res_json = None
         try:
-            api = f"/api/sns/web/v1/note/like/page"
+            api = "/api/sns/web/v1/note/like/page"
             params = {
                 "num": "30",
                 "cursor": cursor,
@@ -365,7 +365,7 @@ class XHS_Apis:
         """
         res_json = None
         try:
-            api = f"/api/sns/web/v2/note/collect/page"
+            api = "/api/sns/web/v2/note/collect/page"
             params = {
                 "num": "30",
                 "cursor": cursor,
@@ -442,7 +442,7 @@ class XHS_Apis:
             note_id = urlParse.path.split("/")[-1]
             kvs = urlParse.query.split("&")
             kvDist = {kv.split("=")[0]: kv.split("=")[1] for kv in kvs}
-            api = f"/api/sns/web/v1/feed"
+            api = "/api/sns/web/v1/feed"
             data = {
                 "source_note_id": note_id,
                 "image_formats": ["jpg", "webp", "avif"],

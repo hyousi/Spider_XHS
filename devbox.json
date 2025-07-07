@@ -2,12 +2,5 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.7/.schema/devbox.schema.json",
   "packages": ["python3@latest", "nodejs@22", "uv@latest", "pnpm@latest"],
   "shell": {
-    "init_hook": [],
-    "scripts": {
-      "install": ["uv sync", "npm install"],
-      "dev:server": ["uv run fastapi dev backend/main.py"],
-      "format:server": ["uvx ruff format backend"],
-      "lint:server": ["uvx ruff check backend"]
-    }
   }
 }

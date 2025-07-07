@@ -4,19 +4,8 @@ import random
 import execjs
 from xhs_utils.cookie_util import trans_cookies
 
-try:
-    js = execjs.compile(
-        open(r"../static/xhs_xs_xsc_56.js", "r", encoding="utf-8").read()
-    )
-except:
-    js = execjs.compile(open(r"static/xhs_xs_xsc_56.js", "r", encoding="utf-8").read())
-
-try:
-    xray_js = execjs.compile(
-        open(r"../static/xhs_xray.js", "r", encoding="utf-8").read()
-    )
-except:
-    xray_js = execjs.compile(open(r"static/xhs_xray.js", "r", encoding="utf-8").read())
+js = execjs.compile(open(r"./static/xhs_xs_xsc_56.js", "r", encoding="utf-8").read())
+xray_js = execjs.compile(open(r"./static/xhs_xray.js", "r", encoding="utf-8").read())
 
 
 def generate_x_b3_traceid(len=16):

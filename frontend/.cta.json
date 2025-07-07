@@ -1,18 +1,11 @@
 {
-  "projectName": "frontend",
-  "mode": "file-router",
-  "typescript": true,
-  "tailwind": true,
-  "packageManager": "npm",
-  "git": true,
-  "version": 1,
-  "framework": "react-cra",
-  "chosenAddOns": [
-    "biome",
-    "form",
-    "store",
-    "start",
-    "table",
-    "tanstack-query"
-  ]
+	"projectName": "frontend",
+	"mode": "file-router",
+	"typescript": true,
+	"tailwind": true,
+	"packageManager": "npm",
+	"git": true,
+	"version": 1,
+	"framework": "react-cra",
+	"chosenAddOns": ["biome", "form", "store", "start", "table", "tanstack-query"]
 }
