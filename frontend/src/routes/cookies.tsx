@@ -37,7 +37,7 @@ function CookiesComponent() {
   const addCookieMutation = $api.useMutation("post", "/cookie/set", {
     onSuccess: () => {
       queryClient.invalidateQueries($api.queryOptions("get", "/cookie/status"));
-      onOpenChange(); // Close modal
+      onOpenChange(); 
     },
   });
 
@@ -55,7 +55,7 @@ function CookiesComponent() {
 
   const handleAddCookie = () => {
     addCookieMutation.mutate({
-      body: { cookies: newCookie.cookies, platform: "xhs" },
+      body: { cookies: newCookie.cookies, platform: "xhs_pc" },
     });
   };
 

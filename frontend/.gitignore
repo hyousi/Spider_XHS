@@ -10,3 +10,6 @@ count.txt
 .output
 .vinxi
 count.txt
+
+routeTree.gen.ts
+api.d.ts

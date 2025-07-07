@@ -51,6 +51,7 @@ class CookieManager:
                     created_at=datetime.now(),
                     updated_at=datetime.now(),
                     description=description,
+                    last_used=datetime.now(),
                 )
 
                 # 存储Cookie
